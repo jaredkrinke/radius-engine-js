@@ -405,28 +405,18 @@ Layer.prototype = {
                         }
 
                         if (element instanceof Image && element.image && element.image.loaded && element.width && element.height) {
+                            context.translate(element.x, -element.y);
+                            context.scale(element.width, element.height);
                             if (element.angle) {
-                                context.translate(element.x, -element.y);
-                                context.scale(element.width, element.height);
-                                // Rotate around the center
-                                context.translate(0.5, 0.5);
                                 context.rotate(element.angle);
-                                context.translate(-0.5, -0.5);
-                                if (element instanceof ImageRegion) {
-                                    var imgWidth = element.image.element.width;
-                                    var imgHeight = element.image.element.height;
-                                    context.drawImage(element.image.element, element.sx / imgWidth, element.sy / imgHeight, element.swidth / imgWidth, element.sheight / imgHeight, 0, 0, 1, 1);
-                                } else {
-                                    context.drawImage(element.image.element, 0, 0, 1, 1);
-                                }
+                            }
+
+                            if (element instanceof ImageRegion) {
+                                var imgWidth = element.image.element.width;
+                                var imgHeight = element.image.element.height;
+                                context.drawImage(element.image.element, element.sx / imgWidth, element.sy / imgHeight, element.swidth / imgWidth, element.sheight / imgHeight, -0.5, -0.5, 1, 1);
                             } else {
-                                if (element instanceof ImageRegion) {
-                                    var imgWidth = element.image.element.width;
-                                    var imgHeight = element.image.element.height;
-                                    context.drawImage(element.image.element, element.sx * imgWidth, element.sy * imgHeight, element.swidth * imgWidth, element.sheight * imgHeight, element.x, -element.y, element.width, element.height);
-                                } else {
-                                    context.drawImage(element.image.element, element.x, -element.y, element.width, element.height);
-                                }
+                                context.drawImage(element.image.element, -0.5, -0.5, 1, 1);
                             }
                         } else {
                             // Color is only supported for text/shapes
@@ -454,17 +444,12 @@ Layer.prototype = {
                                 }
                             } else if (element.width && element.height) {
                                 // Rectangle
+                                context.translate(element.x, -element.y);
+                                context.scale(element.width, element.height);
                                 if (element.angle) {
-                                    context.translate(element.x, -element.y);
-                                    context.scale(element.width, element.height);
-                                    // Rotate around the center
-                                    context.translate(0.5, 0.5);
                                     context.rotate(element.angle);
-                                    context.translate(-0.5, -0.5);
-                                    context.fillRect(-0.5, -0.5, 1, 1);
-                                } else {
-                                    context.fillRect(element.x, -element.y, element.width, element.height);
                                 }
+                                context.fillRect(-0.5, -0.5, 1, 1);
                             }
                         }
 
